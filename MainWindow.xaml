@@ -17,7 +17,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="lb" Grid.Column ="0" Margin="5,5,5,5"  Grid.Row="1" SelectionChanged="lb_SelectionChanged"/>
+        <ListBox x:Name="lb" Grid.Column ="0" Margin="5,5,5,5"  Grid.Row="1" SelectionChanged="lb_SelectionChanged" Background="White"/>
         <Image x:Name="img" Grid.Column="1" Margin="5,5,5,5" Grid.RowSpan="2" Grid.Row="1" />
         <DockPanel LastChildFill="True" Grid.Row="2" Grid.Column="0">
             <TextBox x:Name="tb" DockPanel.Dock="Top"  Margin="5,5,5,0" TextChanged="TextBox_TextChanged"/>
@@ -27,13 +27,13 @@
                 <ComboBoxItem Content="Pig"/>
                 <ComboBoxItem Content="All"/>
             </ComboBox>
-            <Button DockPanel.Dock="Top" MaxHeight="25" Margin="5,5,5,5" Content="Delete" x:Name="btn" Click="Button_Click" IsEnabled="False"/>
+            <Button DockPanel.Dock="Top" MaxHeight="25" Margin="5,5,5,5" Content="Delete" x:Name="btn" Click="DeleteButton_Click" IsEnabled="False"/>
         </DockPanel>
         <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
             <MenuItem Header="...">
-                <MenuItem Header="Добавить" Click="MenuItem_Click"/>
-                <MenuItem Header="Сохранить" Click="MenuItem_Click_1"/>
-                <MenuItem Header="Открыть" Click="MenuItem_Click_2"/>
+                <MenuItem Header="Добавить" Click="MenuItem_Add_Click"/>
+                <MenuItem Header="Сохранить" Click="MenuItem_Save_Click"/>
+                <MenuItem Header="Открыть" Click="MenuItem_Open_Click"/>
             </MenuItem>
         </Menu>
     </Grid>

@@ -14,26 +14,17 @@ namespace memes
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static List<Meme> memes = new List<Meme>();
+        public static List<Meme> Memes = new List<Meme>();
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            AddWindowDialog addWindow = new AddWindowDialog
-            {
-                Owner = this
-            };
-            addWindow.ShowDialog();
-            RefreshListBox();
-        }
         void RefreshListBox()
         {
             lb.Items.Clear();
-            if (memes.Count == 0) return;
-            foreach(var meme in memes)
+            if (Memes.Count == 0) return;
+            foreach(var meme in Memes)
             {
                 if (meme.Name.Contains(tb.Text) && (cb.SelectedIndex == -1 || cb.SelectedIndex == 3 || meme.Type == cb.SelectedIndex))
                     lb.Items.Add(meme.Name);
@@ -49,7 +40,7 @@ namespace memes
                 return;
             }
             string path = "";
-            foreach(var meme in memes)
+            foreach(var meme in Memes)
             {
                 if(meme.Name == lb.SelectedItem.ToString())
                 {
@@ -69,10 +60,18 @@ namespace memes
              btn.IsEnabled = true;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            memes.RemoveAt(lb.SelectedIndex);
-            RefreshListBox();
+            foreach(var meme in Memes)
+            {
+                if(meme.Name == lb.SelectedItem.ToString())
+                {
+                    Memes.Remove(meme);
+                    RefreshListBox();
+                    return;
+                }
+            }
+            
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -84,11 +83,19 @@ namespace memes
         {
             RefreshListBox();
         }
-
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void MenuItem_Add_Click(object sender, RoutedEventArgs e)
         {
-            string json = "";
-            json = JsonConvert.SerializeObject(memes);
+            AddWindowDialog addWindow = new AddWindowDialog
+            {
+                Owner = this
+            };
+            addWindow.ShowDialog();
+            RefreshListBox();
+        }
+
+        private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
+        {
+            string json = JsonConvert.SerializeObject(Memes);
             try 
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -102,7 +109,7 @@ namespace memes
             }
         }
 
-        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
         {
             try 
             {
@@ -110,7 +117,7 @@ namespace memes
                 openFileDialog.Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt";
                 openFileDialog.ShowDialog();
                 string json = File.ReadAllText(openFileDialog.FileName);
-                memes = JsonConvert.DeserializeObject<List<Meme>>(json);
+                Memes = JsonConvert.DeserializeObject<List<Meme>>(json);
                 RefreshListBox();
             }
             catch
