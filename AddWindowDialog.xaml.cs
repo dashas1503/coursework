@@ -1,5 +1,8 @@
 ﻿using Microsoft.Win32;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 
 namespace memes
 {
@@ -34,14 +37,32 @@ namespace memes
             }
             else
             {
-                MainWindow.Memes.Add(new Meme { Name = tb.Text, Path = pathLb.Content.ToString(), Type = cb.SelectedIndex});
-                Close();
+                foreach (var meme in MainWindow.memes)
+                {
+                    if (meme.Name == tb.Text)
+                    {
+                        MainWindow.memes.Add(new Meme { Name = tb.Text + "-копия", Path = pathLb.Content.ToString(), Type = cb.SelectedIndex, Tags = tagsTb.Text.Split(' ').ToList() });
+                        Close();
+                        break;
+                    }
+                }
+                if (IsActive)
+                {
+                    MainWindow.memes.Add(new Meme { Name = tb.Text, Path = pathLb.Content.ToString(), Type = cb.SelectedIndex, Tags = tagsTb.Text.Split(' ').ToList() });
+                    Close();
+                } 
             }
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private new void PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("^[а-яА-Яa-zA-Z0-9]");
+            e.Handled = !regex.IsMatch(e.Text);
         }
     }
 }

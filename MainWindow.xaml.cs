@@ -14,43 +14,53 @@ namespace memes
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static List<Meme> Memes = new List<Meme>();
+        public static List<Meme> memes = new List<Meme>();
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        void RefreshListBox()
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            lb.Items.Clear();
-            if (Memes.Count == 0) return;
-            foreach(var meme in Memes)
+            AddWindowDialog addWindow = new AddWindowDialog
             {
-                if (meme.Name.Contains(tb.Text) && (cb.SelectedIndex == -1 || cb.SelectedIndex == 3 || meme.Type == cb.SelectedIndex))
+                Owner = this
+            };
+            addWindow.ShowDialog();
+            RefreshListBox();
+        }
+        void RefreshListBox()
+      {
+            lb.Items.Clear();
+            if (memes.Count == 0) return;
+            foreach(var meme in memes)
+            {
+                if (( meme.IsHasTag(tb.Text) || meme.Name.Contains(tb.Text)) && (cb.SelectedIndex == -1 || cb.SelectedIndex == 3 || meme.Type == cb.SelectedIndex))
                     lb.Items.Add(meme.Name);
             }
         }
 
         private void lb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(lb.SelectedItem == null) 
-            {
-                img.Source = null;
-                btn.IsEnabled = false;
-                return;
-            }
-            string path = "";
-            foreach(var meme in Memes)
-            {
-                if(meme.Name == lb.SelectedItem.ToString())
-                {
-                    path = meme.Path;
-                }
-            }
             try 
             {
-                Uri fileUri = new Uri(path);
-                img.Source = new BitmapImage(fileUri);
+                if (lb.SelectedItem == null)
+                {
+                    img.Source = null;
+                    btn.IsEnabled = false;
+                    return;
+                }
+                string path = "";
+                foreach (var meme in memes)
+                {
+                    if (meme.Name == lb.SelectedItem.ToString())
+                    {
+                        path = meme.Path;
+                        Uri fileUri = new Uri(path);
+                        img.Source = new BitmapImage(fileUri);
+                        img.ToolTip = "#"+string.Join("#", meme.Tags); 
+                    }
+                }
             }
             catch
             {
@@ -60,18 +70,10 @@ namespace memes
              btn.IsEnabled = true;
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            foreach(var meme in Memes)
-            {
-                if(meme.Name == lb.SelectedItem.ToString())
-                {
-                    Memes.Remove(meme);
-                    RefreshListBox();
-                    return;
-                }
-            }
-            
+            memes.RemoveAt(lb.SelectedIndex);
+            RefreshListBox();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -83,19 +85,11 @@ namespace memes
         {
             RefreshListBox();
         }
-        private void MenuItem_Add_Click(object sender, RoutedEventArgs e)
-        {
-            AddWindowDialog addWindow = new AddWindowDialog
-            {
-                Owner = this
-            };
-            addWindow.ShowDialog();
-            RefreshListBox();
-        }
 
-        private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            string json = JsonConvert.SerializeObject(Memes);
+            string json = "";
+            json = JsonConvert.SerializeObject(memes);
             try 
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -109,7 +103,7 @@ namespace memes
             }
         }
 
-        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
             try 
             {
@@ -117,7 +111,7 @@ namespace memes
                 openFileDialog.Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt";
                 openFileDialog.ShowDialog();
                 string json = File.ReadAllText(openFileDialog.FileName);
-                Memes = JsonConvert.DeserializeObject<List<Meme>>(json);
+                memes = JsonConvert.DeserializeObject<List<Meme>>(json);
                 RefreshListBox();
             }
             catch

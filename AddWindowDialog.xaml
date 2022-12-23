@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:memes"
         mc:Ignorable="d"
-        Title="AddWindowDialog" Height="275" Width="200">
+        Title="AddWindowDialog" Height="285" Width="255">
     <Grid Height="230" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -24,14 +24,16 @@
         <TextBox Grid.Row="1" Margin="5" x:Name="tb" HorizontalContentAlignment="Center" HorizontalAlignment="Center" MinWidth="100" Width="100" Grid.ColumnSpan="2" TextAlignment="Center"/>
         <Label Content="Имя:" Margin="5" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="96" Grid.ColumnSpan="2"/>
         <Button Content="Открыть.." Margin="5" HorizontalAlignment="Center" Width="70" Click="Button_Click" Grid.Row="4" Grid.ColumnSpan="2" />
-        <ComboBox x:Name="cb" Grid.Row="3" Margin="5" HorizontalAlignment="Center" MinWidth="100" Width="100" Grid.ColumnSpan="2" >
+        <ComboBox x:Name="cb" Grid.Row="3" Margin="5" HorizontalAlignment="Center" MinWidth="100" Width="100">
             <ComboBoxItem Content="Cat"/>
             <ComboBoxItem Content="Dog"/>
             <ComboBoxItem Content="Pig"/>
         </ComboBox>
-        <Label Content="Категория:" Margin="5" Grid.Row="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="96" Grid.ColumnSpan="2"/>
+        <Label Content="Категория:" Margin="5" Grid.Row="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+        <TextBox Grid.Row="3" Margin="5" x:Name="tagsTb" PreviewTextInput="PreviewTextInput" HorizontalContentAlignment="Center" HorizontalAlignment="Center" MinWidth="100" Width="100" Grid.Column="2" TextAlignment="Center"/>
+        <Label Content="Теги:"  Margin="5" Grid.Row="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Grid.Column="2"/>
         <Label x:Name="pathLb" Margin="5" Grid.Row="5" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="124" FontSize="7" />
         <Button Content="Подтвердить" HorizontalAlignment="Center" Width="70" Margin="0,5,0,5" Grid.Row="6" Click="Button_Click_1"/>
-        <Button Content="Отменить" HorizontalAlignment="Center"  Width="70" Margin="0,5,0,5"  Grid.Row="6" Grid.Column="1" Click="Button_Click_2"/>
+        <Button Content="Отменить" HorizontalAlignment="Center"  Width="70" Margin="0,5,0,5"  Grid.Row="6" Grid.Column="1" Click="Button_Click_2"/> 
     </Grid>
 </Window>
