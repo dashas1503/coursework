@@ -31,9 +31,9 @@
         </DockPanel>
         <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
             <MenuItem Header="...">
-                <MenuItem Header="Добавить" Click="MenuItem_Click"/>
-                <MenuItem Header="Сохранить" Click="MenuItem_Click_1"/>
-                <MenuItem Header="Открыть" Click="MenuItem_Click_2"/>
+                <MenuItem Header="Добавить" Click="MenuItem_Add_Click"/>
+                <MenuItem Header="Сохранить" Click="MenuItem_Save_Click"/>
+                <MenuItem Header="Открыть" Click="MenuItem_Open_Click"/>
             </MenuItem>
         </Menu>
     </Grid>

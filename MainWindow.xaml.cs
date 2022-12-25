@@ -3,9 +3,12 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 
 namespace memes
 {
@@ -20,7 +23,7 @@ namespace memes
             InitializeComponent();
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Add_Click(object sender, RoutedEventArgs e)
         {
             AddWindowDialog addWindow = new AddWindowDialog
             {
@@ -86,16 +89,36 @@ namespace memes
             RefreshListBox();
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-            string json = "";
-            json = JsonConvert.SerializeObject(memes);
             try 
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "Text files (*.txt)|*.txt| Json files (*.json)|*.json";
+                saveFileDialog.Filter = "Json file (*.json)|*.json|Binary file (*.dat)|*.dat|XML file (*.xml)|*.xml";
                 saveFileDialog.ShowDialog();
-                File.WriteAllText(saveFileDialog.FileName, json);
+
+                switch (Path.GetExtension(saveFileDialog.FileName))
+                {
+                    case (".json"):
+                        string json = "";
+                        json = JsonConvert.SerializeObject(memes);
+                        File.WriteAllText(saveFileDialog.FileName, json);
+                        break;
+                    case (".dat"):
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.OpenOrCreate))
+                        {
+                            formatter.Serialize(fs, memes);
+                        }
+                        break;
+                    case (".xml"):
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Meme>));
+                        using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.OpenOrCreate))
+                        {
+                            xmlSerializer.Serialize(fs, memes);
+                        }
+                        break;
+                }
             }
             catch
             {
@@ -103,15 +126,38 @@ namespace memes
             }
         }
 
-        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
         {
             try 
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt";
+                openFileDialog.Filter = "Json file (*.json)|*.json|Binary file (*.dat)|*.dat|XML file (*.xml)|*.xml";
                 openFileDialog.ShowDialog();
-                string json = File.ReadAllText(openFileDialog.FileName);
-                memes = JsonConvert.DeserializeObject<List<Meme>>(json);
+
+                switch(Path.GetExtension(openFileDialog.FileName))
+                {
+                    case (".json"):
+                        string json = File.ReadAllText(openFileDialog.FileName);
+                        memes = JsonConvert.DeserializeObject<List<Meme>>(json);
+                        break;
+                    case (".dat"):
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        using (FileStream fs = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate))
+                        {
+                            object obj = formatter.Deserialize(fs);
+                            memes = obj as List<Meme>;
+                        }
+                        break;
+                    case (".xml"):
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Meme>));
+                        using (FileStream fs = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate))
+                        {
+                            object obj = xmlSerializer.Deserialize(fs);
+                            memes = obj as List<Meme>;
+                        }
+                        break;
+                }
+
                 RefreshListBox();
             }
             catch

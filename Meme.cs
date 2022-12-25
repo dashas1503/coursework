@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace memes
 {
+    [Serializable]
     public class Meme
     {
         public string Name { get; set; }
